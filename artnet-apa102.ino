@@ -1,10 +1,9 @@
-  #include <SPI.h>
-  #include <WiFi.h>
-  #include <WiFiUDP.h>
-  
+#include <SPI.h>
+#include <WiFi.h>
+#include <WiFiUDP.h>
 
    
-  #define CHANNEL_PER_LED 3
+#define CHANNEL_PER_LED 3
   
   // WiFi network name and password:
   const char * networkName = "Fake.SSID";
@@ -12,20 +11,34 @@
   
    
    
-  IPAddress ip(192, 168, 1, 222);  //Edit this to your own static IP, or comment out wifi.config below
-  IPAddress gate(192, 168, 1, 1);
-  IPAddress subnet(255, 255, 255,0);
+IPAddress ip(192, 168, 1, 222);  //Edit this to your own static IP, or comment out wifi.config below
+IPAddress gate(192, 168, 1, 1);
+IPAddress subnet(255, 255, 255,0);
    
    
-  const int BUTTON_PIN = 0;
-  const int LED_PIN = 5;
-  const int SDI = 23;
-  const int CKI = 18;
+const int BUTTON_PIN = 0;
+const int LED_PIN = 5;
+const int SDI = 23;
+const int CKI = 18;
    
-  WiFiUDP Udp; 
-   
-  void setup()
-  {
+WiFiUDP Udp; 
+
+void loopTask(void *pvParameters)
+{
+    setup();
+    for(;;) {
+        loop();
+    }
+}
+
+extern "C" void app_main()
+{
+    initArduino();
+    xTaskCreatePinnedToCore(loopTask, "loopTask", 4096, NULL, 1, NULL, 0);
+}
+
+void setup()
+{
     // Initilize hardware:
     Serial.begin(115200);
     pinMode(BUTTON_PIN, INPUT_PULLUP);
@@ -41,7 +54,7 @@
    
     digitalWrite(LED_PIN, LOW); // LED offnn
     Udp.begin(0x1936);
-  }
+}
 
 void loop()
 {
