@@ -11,7 +11,6 @@
 #define networkName  "Bill.Wi.The.Science.Fi"
 #define networkPswd  "ScienceRules1"
 
-#define LED_PIN 5
    
 IPAddress ip(192, 168, 1, 222);  //Edit this to your own static IP, or comment out wifi.config below
 IPAddress gate(192, 168, 1, 1);
@@ -48,7 +47,7 @@ void setup()
 {
     // Initilize hardware:
     Serial.begin(115200);
-    pinMode(LED_PIN, OUTPUT);
+    pinMode(LED_BUILTIN , OUTPUT);
     SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
     SPI.begin();
  
@@ -88,7 +87,7 @@ void loop()
                     spi_data[out_index+2] = packetBuffer[in_index+1];  //Gree
                     spi_data[out_index+3] = packetBuffer[in_index+0];  //Blue 
                 }
-            digitalWrite(LED_PIN, !digitalRead(LED_PIN));
+            digitalWrite(LED_BUILTIN , !digitalRead(LED_BUILTIN));
             SPI.writeBytes(spi_data,SPI_DATA_LEN);
         }
     }
@@ -109,7 +108,7 @@ void connectToWiFi(const char * ssid, const char * pwd)
     while (WiFi.status() != WL_CONNECTED)
     {
       // Blink LED while we're connecting:
-      digitalWrite(LED_PIN, !digitalRead(LED_PIN));
+      digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
       delay(500);
     }
    
