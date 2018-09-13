@@ -70,11 +70,12 @@ void loop()
                     //Art-Net provides 0-127 for intensity, but led only takes 0-31, plus upper bits must be 1
                     spi_data[out_index]   = (CHANNELS_PER_LED == 3)?0xFF:(packetBuffer[in_index+3]/4)|0xE0;  //Intensity
                     spi_data[out_index+1] = packetBuffer[in_index+2];  //Red
-                    spi_data[out_index+2] = packetBuffer[in_index+1];  //Gree
+                    spi_data[out_index+2] = packetBuffer[in_index+1];  //Green
                     spi_data[out_index+3] = packetBuffer[in_index+0];  //Blue 
                 }
             digitalWrite(LED_BUILTIN , !digitalRead(LED_BUILTIN));
             SPI.writeBytes(spi_data,SPI_DATA_LEN);
+
         }
     }
 }
