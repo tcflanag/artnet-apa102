@@ -29,20 +29,6 @@ uint8_t spi_data[SPI_DATA_LEN] = {};
 WiFiUDP Udp; 
 
 
-void loopTask(void *pvParameters)
-{
-    setup();
-    for(;;) {
-        loop();
-    }
-}
-
-extern "C" void app_main()
-{
-    initArduino();
-    xTaskCreatePinnedToCore(loopTask, "loopTask", 4096, NULL, 1, NULL, 0);  //Override core to 0 until ESP32 fixes their stuff
-}
-
 void setup()
 {
     // Initilize hardware:
@@ -51,8 +37,7 @@ void setup()
     SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
     SPI.begin();
  
-    connectToWiFi(networkName, networkPswd);
-    Udp.begin(0x1936);
+
 
     //Init LEDs to all off
     for(int i = 4;i<TOTAL_LEDS*4;i+=4) {
@@ -66,6 +51,7 @@ void loop()
 {
     if (WiFi.status() != WL_CONNECTED) {  //Auto reconnect
         connectToWiFi(networkName, networkPswd);
+        Udp.begin(0x1936);
     }
     char packetBuffer[2000];
     int numBytes = Udp.parsePacket();
